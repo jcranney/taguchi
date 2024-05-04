@@ -1,0 +1,10 @@
+command: ipython test_function.py
+PARAM_A:
+  - 1
+  - 2
+PARAM_B: 
+  - 1
+  - 2
+PARAM_C: 
+  - 1
+  - 2
