@@ -1,9 +1,18 @@
 #/usr/bin/env python
-
 import os
 import yaml
 import subprocess
+import argparse
 
+parser = argparse.ArgumentParser(
+                    prog='taguchi',
+                    description='performs taguchi based experiments',
+                    epilog='see https://github.com/jcranney/taguchi for more info.')
+
+parser.add_argument('-v', '--verbose',
+            action='count', default=0)  # on/off flag
+args = parser.parse_args()
+verbose = args.verbose
 
 with open("./taguchi.yaml","r") as f:
     a : dict = yaml.full_load(f)
@@ -35,6 +44,9 @@ for experiment in array:
         os.environ[param] = str(a[param][state])
     proc = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
     (out, err) = proc.communicate()
+    if verbose:
+        print(out)
+        print(err)
     out = out.decode().split("\n")
     result = None
     for o in out:
