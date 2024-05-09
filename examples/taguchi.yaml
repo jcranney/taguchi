@@ -4,8 +4,10 @@ PARAM_A:
   - 2
   - 3
 PARAM_B: 
-  - 1
-  - 2
-  - 3
-PARAM_C: # note that PARAM_C doesn't vary, so it doesn't show in output
-  - 1
+  - -25
+  - -20
+  - -15
+PARAM_C:
+  - 8
+  - 11
+  - 14

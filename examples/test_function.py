@@ -6,6 +6,6 @@ c = float(os.environ["PARAM_C"])
 
 print("annoying print message")
 
-f = (a-3.5)**2 + (b-(-20))**2 + (c-1000)**2
+f = (a-3.5)**2 + (b-(-20))**2 + (c-10)**2
 
 print(f)

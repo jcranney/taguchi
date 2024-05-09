@@ -64,9 +64,13 @@ for experiment in array:
             print(param,state)
     proc = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
     (out, err) = proc.communicate()
+    if err is not None:
+        print(err.decode())
+        exit(1)
     if verbose > 1:
         print(out.decode())
         print(err)
+    
     out = out.decode().split("\n")
     result = None
     for o in out:
