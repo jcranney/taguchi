@@ -3,6 +3,8 @@ import os
 import yaml
 import subprocess
 import argparse
+import json
+from importlib import resources
 
 parser = argparse.ArgumentParser(
                     prog='taguchi',
@@ -17,41 +19,61 @@ verbose = args.verbose
 with open("./taguchi.yaml","r") as f:
     a : dict = yaml.full_load(f)
 
-#print(a)
-
 command = a.pop("command")
 
-params = list(a.keys())
+params = []
+for param in list(a.keys()):
+    if len(a[param])==0:
+        if verbose: 
+            print(f"empty param: {param}, skipping it.")
+        continue
+    if len(a[param])==1:
+        os.environ[param] = str(a[param][0])
+        if verbose:
+            print(f"param {param} has only one value, setting to {str(a[param][0])}")
+        continue
+    params.append(param)
+
 n_params = len(params)
 n_states = len(a[params[0]])
+for param in params:
+    if len(a[param]) != n_states:
+        raise ValueError("All parameters must have the same number of states (for now)")
 
-orthogonal_arrays = {
-    (3,2) : 
-       [[0,0,0],
-        [0,1,1],
-        [1,0,1],
-        [1,1,0]]
-}
+filename = resources.files("taguchi")/"database.json"
+
+with open(filename,"r") as f:
+    orthogonal_arrays = json.load(f)
 
 try:
-    array = orthogonal_arrays[(n_params,n_states)]
+    array = orthogonal_arrays[f"{n_params:d},{n_states:d}"]
 except KeyError as e:
     raise NotImplementedError(f"{n_params:d} params with {n_states:d} states not supported.")
+
+if verbose:
+    print(f"Doing {len(array)} experiments in total!\n")
+if verbose > 1:
+    print("Experiments:")
+    print(array)
 
 results = []
 for experiment in array:
     for param,state in zip(params,experiment):
         os.environ[param] = str(a[param][state])
+        if verbose:
+            print(param,state)
     proc = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
     (out, err) = proc.communicate()
-    if verbose:
-        print(out)
+    if verbose > 1:
+        print(out.decode())
         print(err)
     out = out.decode().split("\n")
     result = None
     for o in out:
         try:
             result = float(o)
+            if verbose:
+                print(f"{result=}\n")
         except ValueError:
             pass
     if result is None:

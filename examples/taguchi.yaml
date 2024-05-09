@@ -2,9 +2,10 @@ command: ipython test_function.py
 PARAM_A:
   - 1
   - 2
+  - 3
 PARAM_B: 
   - 1
   - 2
-PARAM_C: 
+  - 3
+PARAM_C: # note that PARAM_C doesn't vary, so it doesn't show in output
   - 1
-  - 2
