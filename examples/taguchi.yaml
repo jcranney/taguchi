@@ -2,12 +2,12 @@ command: ipython test_function.py
 PARAM_A:
   - 1
   - 2
-  - 3
+  #- 3
 PARAM_B: 
   - -25
-  - -20
-  - -15
+  #- -20
+  #- -15
 PARAM_C:
   - 8
-  - 11
-  - 14
+  #- 11
+  #- 14

@@ -22,6 +22,7 @@ with open("./taguchi.yaml","r") as f:
 command = a.pop("command")
 
 params = []
+static_params = []
 for param in list(a.keys()):
     if len(a[param])==0:
         if verbose: 
@@ -31,11 +32,17 @@ for param in list(a.keys()):
         os.environ[param] = str(a[param][0])
         if verbose:
             print(f"param {param} has only one value, setting to {str(a[param][0])}")
+        static_params.append(param)
         continue
     params.append(param)
 
 n_params = len(params)
-n_states = len(a[params[0]])
+if n_params > 0:
+    n_states = len(a[params[0]])
+else:
+    n_states = 0 # to get here, we must have static parameters only (if anything)
+                 # I realise that n_states makes more sense as "1" but let's have
+                 # n_states = 0 => all static params
 for param in params:
     if len(a[param]) != n_states:
         raise ValueError("All parameters must have the same number of states (for now)")
@@ -55,6 +62,7 @@ if verbose:
 if verbose > 1:
     print("Experiments:")
     print(array)
+
 
 results = []
 for experiment in array:
@@ -85,6 +93,8 @@ for experiment in array:
     
     results.append(result)
 
+if len(params) > 0:
+    print("\n`````` VARIABLE PARAMS ``````")
 for j,param in enumerate(params):
     print(f"{param:12s}")
     for i,state in enumerate(a[param]):
@@ -95,3 +105,10 @@ for j,param in enumerate(params):
                 res += results[k]
                 n_experiment += 1
         print(f"{state:12} : {res/n_experiment:12f}")
+
+if len(static_params) > 0:
+    print("\n``````  STATIC PARAMS  ``````")
+for j,param in enumerate(static_params):
+    print(f"{param:12s}")
+    for i,state in enumerate(a[param]):
+        print(f"{state:12} : {sum(results)/len(results):12f}")
