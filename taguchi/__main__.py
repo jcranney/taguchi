@@ -76,7 +76,7 @@ for experiment in array:
     for param,state in zip(params,experiment):
         os.environ[param] = str(a[param][state])
         if verbose:
-            print(param,state)
+            print(param,a[param][state])
     proc = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
     (out, err) = proc.communicate()
     if err is not None:
