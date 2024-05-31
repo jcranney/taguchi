@@ -12,15 +12,25 @@ parser = argparse.ArgumentParser(
                     description='performs taguchi based experiments',
                     epilog='see https://github.com/jcranney/taguchi for more info.')
 
-parser.add_argument('-v', '--verbose',
-            action='count', default=0)  # on/off flag
-parser.add_argument('-d', '--dense',
-            action='count', default=0)  # on/off flag
+parser.add_argument(
+    'config', nargs='?', default="./taguchi.yaml",
+    help="specify a yaml file instead of looking for taguchi.yaml"
+)
+parser.add_argument(
+    '-v', '--verbose', action='count', default=0,
+    help="verbosity level (e.g., use -vvv for level 3 verbosity)"
+)
+parser.add_argument(
+    '-d', '--dense', action='count', default=0,
+    help="force use of 'dense' experiment array, performing all possible experiments"
+)
+
 args = parser.parse_args()
 verbose = args.verbose
 dense = args.dense
+config = args.config
 
-with open("./taguchi.yaml","r") as f:
+with open(config,"r") as f:
     a : dict = yaml.full_load(f)
 
 command = a.pop("command")
