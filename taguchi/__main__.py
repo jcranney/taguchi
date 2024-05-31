@@ -5,6 +5,7 @@ import subprocess
 import argparse
 import json
 from importlib import resources
+from itertools import product
 
 parser = argparse.ArgumentParser(
                     prog='taguchi',
@@ -13,8 +14,11 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('-v', '--verbose',
             action='count', default=0)  # on/off flag
+parser.add_argument('-d', '--dense',
+            action='count', default=0)  # on/off flag
 args = parser.parse_args()
 verbose = args.verbose
+dense = args.dense
 
 with open("./taguchi.yaml","r") as f:
     a : dict = yaml.full_load(f)
@@ -52,10 +56,13 @@ filename = resources.files("taguchi")/"database.json"
 with open(filename,"r") as f:
     orthogonal_arrays = json.load(f)
 
-try:
-    array = orthogonal_arrays[f"{n_params:d},{n_states:d}"]
-except KeyError as e:
-    raise NotImplementedError(f"{n_params:d} params with {n_states:d} states not supported.")
+if dense:
+    array = list(product(range(n_states),repeat=n_params))
+else:
+    try:
+        array = orthogonal_arrays[f"{n_params:d},{n_states:d}"]
+    except KeyError as e:
+        raise NotImplementedError(f"{n_params:d} params with {n_states:d} states not supported, try --dense")
 
 if verbose:
     print(f"Doing {len(array)} experiments in total!\n")
