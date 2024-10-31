@@ -2,7 +2,7 @@ import json
 
 in_filename = "database.txt"
 out_filename = "database.json"
-with open(in_filename,"r") as f:
+with open(in_filename, "r") as f:
     lines = f.readlines()
 
 batches = {}
@@ -10,7 +10,7 @@ for line in lines:
     if line[:3] == "###":
         n_params = int(line.split(" ")[1].split("=")[1])
         n_states = int(line.split(" ")[2].split("=")[1])
-        this_batch = []
+        this_batch: list = []
         continue
     if line[0] in " c":
         continue
@@ -20,5 +20,5 @@ for line in lines:
         continue
     this_batch.append(line.split()[1:])
 
-with open(out_filename,"w") as f:
-    json.dump(batches,f)
+with open(out_filename, "w") as f:
+    json.dump(batches, f)
