@@ -102,17 +102,16 @@ for experiment in array:
     if err is not None:
         printout(err.decode(), level=0)
         exit(1)
-    printout(out.decode(), level=1)
-    printout(err, level=1)
+    printout(out.decode(), level=2)
 
     out = out.decode().split("\n")
     result = None
     for o in out:
         try:
             result = float(o)
-            printout(f"{result=}\n")
         except ValueError:
             pass
+    printout(f"{result=}\n")
     if result is None:
         raise ValueError("No number found in output of command")
 
